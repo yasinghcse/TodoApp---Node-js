@@ -7,6 +7,7 @@ var {User}= require('./models/user');
 
 var app= express();
 app.use(bodyParser.json());
+const port = process.env.PORT||3000;
 
 //creating a todo Doc
 app.post('/todos',(req,res)=>{
@@ -45,8 +46,27 @@ app.get('/todos/:id',(req,res)=>{
   });
 });
 
-app.listen(3000,()=>{
-  console.log('Listing at port 3000');
+//delete todo note
+app.delete('/todos/:id',(req,res)=>{
+  var id=req.params.id;
+
+  if(!ObjectID.isValid(id)){
+    return res.status(404).send();
+  }
+
+  console.log(id);
+  Todo.findByIdAndRemove(id).then((todo)=>{
+    if(!todo){
+      return res.status(404).send();
+    }
+    return res.send({todo});
+  }).catch((e)=>{
+    return res.status(404).send(e);
+  });
+});
+
+app.listen(port,()=>{
+  console.log(`Listing at port ${port}`);
 });
 
 module.exports={app};
