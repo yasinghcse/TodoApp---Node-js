@@ -14,7 +14,9 @@ const todos=[
   },
   {
     _id: new ObjectID(),
-    text: 'Second Docs'
+    text: 'Second Docs',
+    completed: true,
+    completedAt: 12345
   }
 ];
 
@@ -147,6 +149,45 @@ describe('DELETE /todos/:id',()=>{
     request(app)
     .delete(`/todos/123`)
     .expect(404)
+    .end(done);
+  });
+
+});
+
+//TC for update Todo List
+describe('PATCH /todos/id',()=>{
+
+  it('should update the todo',(done)=>{
+      var hexId=todos[0]._id.toHexString();
+      request(app)
+      .patch(`/todos/${hexId}`)
+      .send({id: hexId,
+      completed: true,
+      text: "Updated by mocha TC"})
+      .expect(200)
+      .expect((res)=>{
+        //console.log(JSON.stringify(res.body,undefined,2));
+        expect(res.body.todo.text).toBe("Updated by mocha TC");
+        expect(res.body.todo.completed).toBe(true);
+        expect(res.body.todo.completedAt).toBeA('number');
+      })
+      .end(done);
+  });
+
+  it('should clear completedAt if todo is not completed',(done)=>{
+    var hexId=todos[1]._id.toHexString();
+    request(app)
+    .patch(`/todos/${hexId}`)
+    .send({id: hexId,
+    completed: false,
+    text: "Updated second text by mocha TC"})
+    .expect(200)
+    .expect((res)=>{
+      //console.log(JSON.stringify(res.body,undefined,2));
+      expect(res.body.todo.text).toBe("Updated second text by mocha TC");
+      expect(res.body.todo.completed).toBe(false);
+      expect(res.body.todo.completedAt).toNotExist();
+    })
     .end(done);
   });
 
