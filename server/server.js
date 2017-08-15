@@ -1,3 +1,5 @@
+require('./config/config');
+
 var express = require('express');
 var bodyParser= require('body-parser');
 var {mongoose}= require('./db/mongoose');
@@ -8,7 +10,7 @@ var {User}= require('./models/user');
 
 var app= express();
 app.use(bodyParser.json());
-const port = process.env.PORT||3000;
+const port = process.env.PORT;
 
 //creating a todo Doc
 app.post('/todos',(req,res)=>{
