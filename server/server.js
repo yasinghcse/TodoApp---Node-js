@@ -151,6 +151,7 @@ app.delete('/users/me/token',authenticate,(req,res)=>{
   });
 });
 
+//exporting port number through env variable
 app.listen(port,()=>{
   console.log(`Listing at port ${port}`);
 });
